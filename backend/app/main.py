@@ -18,6 +18,7 @@ from app.models import (  # noqa: F401
     UserAvailability,
     UserBook,
     UserGenre,
+    WeeklyAvailability,
 )
 from app.routers.auth import router as auth_router
 from app.routers.books import router as books_router

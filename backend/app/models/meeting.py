@@ -19,6 +19,8 @@ class MeetingStatus(str, Enum):
 
 
 class RsvpStatus(str, Enum):
+    PENDING = "PENDING"
+    ACCEPTED = "ACCEPTED"
     GOING = "GOING"
     MAYBE = "MAYBE"
     DECLINED = "DECLINED"
@@ -71,5 +73,17 @@ class UserAvailability(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     start_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
     end_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+    timezone: Mapped[str] = mapped_column(String(100))
+    user: Mapped[User] = relationship(lazy="joined")
+
+
+class WeeklyAvailability(Base):
+    __tablename__ = "weekly_availability"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    weekday: Mapped[int] = mapped_column(index=True)
+    start_minute: Mapped[int]
+    end_minute: Mapped[int]
     timezone: Mapped[str] = mapped_column(String(100))
     user: Mapped[User] = relationship(lazy="joined")

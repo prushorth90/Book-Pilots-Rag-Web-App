@@ -42,6 +42,7 @@ class MeetingCreate(TimeRange):
     description: Optional[str] = Field(default=None, max_length=5000)
     timezone: str = Field(min_length=1, max_length=100)
     location: Optional[str] = Field(default=None, max_length=1000)
+    invitee_ids: list[int] = Field(default_factory=list, max_length=200)
 
 
 class MeetingUpdate(BaseModel):
@@ -68,6 +69,10 @@ class AttendeeResponse(BaseModel):
     user: UserResponse
     model_config = ConfigDict(from_attributes=True)
 
+    @field_serializer("status")
+    def serialize_status(self, value: RsvpStatus) -> str:
+        return "ACCEPTED" if value == RsvpStatus.GOING else value.value
+
 
 class MeetingResponse(BaseModel):
     id: int
@@ -92,6 +97,12 @@ class MeetingResponse(BaseModel):
             value = value.replace(tzinfo=UTC)
         return value.astimezone(UTC).isoformat().replace("+00:00", "Z")
 
+    @field_serializer("viewer_rsvp")
+    def serialize_viewer_rsvp(self, value: Optional[RsvpStatus]) -> Optional[str]:
+        if value is None:
+            return None
+        return "ACCEPTED" if value == RsvpStatus.GOING else value.value
+
 
 class AvailabilityInput(TimeRange):
     timezone: str = Field(min_length=1, max_length=100)
@@ -114,4 +125,37 @@ class AvailabilityResponse(BaseModel):
     def serialize_utc(self, value: datetime) -> str:
         if value.tzinfo is None:
             value = value.replace(tzinfo=UTC)
+        return value.astimezone(UTC).isoformat().replace("+00:00", "Z")
+
+
+class WeeklyAvailabilityInput(BaseModel):
+    weekday: int = Field(ge=0, le=6)
+    start_minute: int = Field(ge=0, lt=1440)
+    end_minute: int = Field(gt=0, le=1440)
+    timezone: str = Field(min_length=1, max_length=100)
+
+    @model_validator(mode="after")
+    def valid_minutes(self) -> "WeeklyAvailabilityInput":
+        if self.end_minute <= self.start_minute:
+            raise ValueError("Weekly availability end must be after start")
+        return self
+
+
+class WeeklyAvailabilityUpdate(BaseModel):
+    rules: list[WeeklyAvailabilityInput] = Field(max_length=50)
+
+
+class WeeklyAvailabilityResponse(WeeklyAvailabilityInput):
+    id: int
+    user_id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SuggestedSlot(BaseModel):
+    start_time: datetime
+    end_time: datetime
+    available_user_ids: list[int]
+
+    @field_serializer("start_time", "end_time")
+    def serialize_slot(self, value: datetime) -> str:
         return value.astimezone(UTC).isoformat().replace("+00:00", "Z")

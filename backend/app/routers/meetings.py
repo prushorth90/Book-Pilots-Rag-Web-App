@@ -18,6 +18,9 @@ from app.schemas.meetings import (
     MeetingResponse,
     MeetingUpdate,
     RsvpUpdate,
+    SuggestedSlot,
+    WeeklyAvailabilityResponse,
+    WeeklyAvailabilityUpdate,
     utc_datetime,
 )
 
@@ -61,17 +64,29 @@ async def meetings(
     db: Db,
     user: CurrentUser,
     club_id: int | None = None,
+    mine: bool = False,
 ) -> list[MeetingResponse]:
     start_utc, end_utc = utc_datetime(start), utc_datetime(end)
     if end_utc <= start_utc:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Invalid date range")
-    results = await repository.list_meetings(db, user.id, start_utc, end_utc, club_id)
+    results = await repository.list_meetings(db, user.id, start_utc, end_utc, club_id, mine)
     return [meeting_response(item, user.id) for item in results]
 
 
 @router.post("/meetings", response_model=MeetingResponse, status_code=status.HTTP_201_CREATED)
 async def create_meeting(data: MeetingCreate, db: Db, user: CurrentUser) -> MeetingResponse:
     await require_book_manager(db, data.club_id, user.id)
+    invitees = set(data.invitee_ids)
+    invitees.add(user.id)
+    for invitee_id in invitees:
+        await require_participant(db, data.club_id, invitee_id)
+    conflicts = await repository.meeting_conflicts(db, invitees, data.start_time, data.end_time)
+    if conflicts:
+        names = sorted({conflict_user.username for _, conflict_user in conflicts})
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            f"Scheduling conflict for: {', '.join(names)}",
+        )
     return meeting_response(await repository.create_meeting(db, user.id, data), user.id)
 
 
@@ -89,6 +104,16 @@ async def update_meeting(
         end = end.replace(tzinfo=UTC)
     if end <= start:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "End time must be after start")
+    invitees = {attendee.user_id for attendee in meeting.attendees}
+    conflicts = await repository.meeting_conflicts(
+        db, invitees, start, end, exclude_meeting_id=meeting.id
+    )
+    if conflicts:
+        names = sorted({conflict_user.username for _, conflict_user in conflicts})
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            f"Scheduling conflict for: {', '.join(names)}",
+        )
     return meeting_response(await repository.update_meeting(db, meeting, data), user.id)
 
 
@@ -146,3 +171,45 @@ async def availability_for_club(
         AvailabilityResponse.model_validate(item)
         for item in await repository.club_availability(db, club_id, start_utc, end_utc)
     ]
+
+
+@router.get("/availability/weekly", response_model=list[WeeklyAvailabilityResponse])
+async def my_weekly_availability(db: Db, user: CurrentUser) -> list[WeeklyAvailabilityResponse]:
+    return [
+        WeeklyAvailabilityResponse.model_validate(item)
+        for item in await repository.weekly_availability(db, user.id)
+    ]
+
+
+@router.put("/availability/weekly", response_model=list[WeeklyAvailabilityResponse])
+async def update_weekly_availability(
+    data: WeeklyAvailabilityUpdate, db: Db, user: CurrentUser
+) -> list[WeeklyAvailabilityResponse]:
+    return [
+        WeeklyAvailabilityResponse.model_validate(item)
+        for item in await repository.replace_weekly_availability(db, user.id, data.rules)
+    ]
+
+
+@router.get("/meetings/suggestions", response_model=list[SuggestedSlot])
+async def meeting_suggestions(
+    club_id: int,
+    start: Annotated[datetime, Query()],
+    end: Annotated[datetime, Query()],
+    db: Db,
+    user: CurrentUser,
+    duration_minutes: Annotated[int, Query(ge=30, le=480)] = 60,
+    invitee_ids: Annotated[list[int] | None, Query()] = None,
+) -> list[SuggestedSlot]:
+    await require_book_manager(db, club_id, user.id)
+    invitees = set(invitee_ids or [])
+    invitees.add(user.id)
+    for invitee_id in invitees:
+        await require_participant(db, club_id, invitee_id)
+    return await repository.suggested_slots(
+        db,
+        invitees,
+        utc_datetime(start),
+        utc_datetime(end),
+        duration_minutes,
+    )

@@ -28,7 +28,7 @@ export function MeetingDetails({ meeting, viewerRole, onClose, onChange }: Props
       <p>{meeting.description ?? "No meeting notes."}</p>
       <div className="organizer-line"><strong>Organizer</strong><span>{meeting.organizer.first_name} {meeting.organizer.last_name}</span></div>
       <div className="attendee-section"><h3><Users size={17} /> Attendees</h3>{meeting.attendees.length ? meeting.attendees.map((attendee) => <p key={attendee.id}><span>{attendee.user.first_name} {attendee.user.last_name}</span><strong>{attendee.status}</strong></p>) : <p>No responses yet.</p>}</div>
-      {meeting.status !== "CANCELLED" ? <div className="rsvp-actions"><span>Your RSVP</span>{(["GOING", "MAYBE", "DECLINED"] as RsvpStatus[]).map((status) => <button className={meeting.viewer_rsvp === status ? "active" : ""} type="button" key={status} onClick={() => rsvp(status)}>{status}</button>)}</div> : null}
+      {meeting.status !== "CANCELLED" ? <div className="rsvp-actions"><span>Your RSVP</span>{(["ACCEPTED", "MAYBE", "DECLINED"] as RsvpStatus[]).map((status) => <button className={meeting.viewer_rsvp === status ? "active" : ""} type="button" key={status} onClick={() => rsvp(status)}>{status}</button>)}</div> : null}
       {canManage && meeting.status !== "CANCELLED" ? <button className="cancel-meeting" type="button" onClick={cancel}>Cancel meeting</button> : null}
     </aside>
   );

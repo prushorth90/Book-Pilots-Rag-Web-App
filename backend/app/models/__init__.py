@@ -8,6 +8,7 @@ from app.models.meeting import (
     MeetingStatus,
     RsvpStatus,
     UserAvailability,
+    WeeklyAvailability,
 )
 from app.models.user import User
 
@@ -27,4 +28,5 @@ __all__ = [
     "UserBook",
     "UserGenre",
     "UserAvailability",
+    "WeeklyAvailability",
 ]

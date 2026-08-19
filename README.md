@@ -57,6 +57,10 @@ The authenticated `/calendar` page uses FullCalendar with month, week, and day v
 
 Meeting and availability timestamps require timezone-aware input and are normalized to UTC before PostgreSQL persistence. The API exposes date-range meeting queries, create/update/cancel operations, RSVP updates, personal availability replacement, and club availability queries. Browsers render returned UTC timestamps in the user’s current `Intl` timezone.
 
+Users may also save recurring weekly rules such as Monday 6–9 PM or Saturday 10 AM–2 PM in their IANA timezone. The scheduling panel intersects invited members’ expanded weekly rules in UTC, removes slots that conflict with scheduled meetings, and offers the remaining shared openings. Invited members begin as `PENDING` and may respond `ACCEPTED`, `MAYBE`, or `DECLINED`.
+
+Calendar filters support all joined-club meetings, meetings where the user has a non-declined attendee record, and a specific club. Upcoming events receive a distinct calendar accent and the next three non-declined meetings appear on the dashboard. Meeting creation and time changes return `409` with affected usernames when an invited member already has an overlapping scheduled meeting.
+
 ## Architecture
 
 ```text

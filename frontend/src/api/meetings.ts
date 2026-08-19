@@ -1,9 +1,10 @@
 import { apiClient } from "./client";
-import type { Availability, Meeting, MeetingAttendee, MeetingInput, RsvpStatus } from "../types/meetings";
+import type { Availability, Meeting, MeetingAttendee, MeetingInput, RsvpStatus, SuggestedSlot, WeeklyAvailability } from "../types/meetings";
 
-export function getMeetings(start: Date, end: Date, clubId?: number): Promise<Meeting[]> {
+export function getMeetings(start: Date, end: Date, options?: { clubId?: number; mine?: boolean }): Promise<Meeting[]> {
   const params = new URLSearchParams({ start: start.toISOString(), end: end.toISOString() });
-  if (clubId) params.set("club_id", String(clubId));
+  if (options?.clubId) params.set("club_id", String(options.clubId));
+  if (options?.mine) params.set("mine", "true");
   return apiClient.get<Meeting[]>(`/meetings?${params}`);
 }
 
@@ -36,4 +37,31 @@ export function saveMyAvailability(
 export function getClubAvailability(clubId: number, start: Date, end: Date): Promise<Availability[]> {
   const params = new URLSearchParams({ start: start.toISOString(), end: end.toISOString() });
   return apiClient.get<Availability[]>(`/availability/clubs/${clubId}?${params}`);
+}
+
+export function getWeeklyAvailability(): Promise<WeeklyAvailability[]> {
+  return apiClient.get<WeeklyAvailability[]>("/availability/weekly");
+}
+
+export function saveWeeklyAvailability(
+  rules: Array<Omit<WeeklyAvailability, "id" | "user_id">>,
+): Promise<WeeklyAvailability[]> {
+  return apiClient.put<WeeklyAvailability[]>("/availability/weekly", { rules });
+}
+
+export function getMeetingSuggestions(
+  clubId: number,
+  start: Date,
+  end: Date,
+  inviteeIds: number[],
+  durationMinutes: number,
+): Promise<SuggestedSlot[]> {
+  const params = new URLSearchParams({
+    club_id: String(clubId),
+    start: start.toISOString(),
+    end: end.toISOString(),
+    duration_minutes: String(durationMinutes),
+  });
+  inviteeIds.forEach((id) => params.append("invitee_ids", String(id)));
+  return apiClient.get<SuggestedSlot[]>(`/meetings/suggestions?${params}`);
 }

@@ -1,7 +1,7 @@
 import type { User } from "./auth";
 
 export type MeetingStatus = "SCHEDULED" | "CANCELLED";
-export type RsvpStatus = "GOING" | "MAYBE" | "DECLINED";
+export type RsvpStatus = "PENDING" | "ACCEPTED" | "DECLINED" | "MAYBE";
 
 export interface MeetingAttendee {
   id: number;
@@ -35,6 +35,7 @@ export interface MeetingInput {
   end_time: string;
   timezone: string;
   location: string | null;
+  invitee_ids: number[];
 }
 
 export interface Availability {
@@ -44,4 +45,19 @@ export interface Availability {
   end_time: string;
   timezone: string;
   user: User | null;
+}
+
+export interface WeeklyAvailability {
+  id: number;
+  user_id: number;
+  weekday: number;
+  start_minute: number;
+  end_minute: number;
+  timezone: string;
+}
+
+export interface SuggestedSlot {
+  start_time: string;
+  end_time: string;
+  available_user_ids: number[];
 }

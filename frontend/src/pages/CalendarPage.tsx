@@ -9,6 +9,7 @@ import { getClub, getClubs } from "../api/clubs";
 import { getMeetings, getMyAvailability, saveMyAvailability } from "../api/meetings";
 import { MeetingDetails } from "../components/MeetingDetails";
 import { MeetingForm } from "../components/MeetingForm";
+import { WeeklyAvailabilitySettings } from "../components/WeeklyAvailabilitySettings";
 import type { ClubDetail } from "../types/clubs";
 import type { Availability, Meeting } from "../types/meetings";
 
@@ -21,18 +22,22 @@ export function CalendarPage() {
   const [selection, setSelection] = useState<Selection | null>(null);
   const [selected, setSelected] = useState<Meeting | null>(null);
   const [availability, setAvailability] = useState<Availability[]>([]);
+  const [filter, setFilter] = useState("all");
+  const [showWeekly, setShowWeekly] = useState(false);
 
   async function refresh() {
-    const next = await getMeetings(range.start, range.end); setMeetings(next);
+    const next = await getMeetings(range.start, range.end, filter === "mine" ? { mine: true } : filter.startsWith("club:") ? { clubId: Number(filter.slice(5)) } : undefined); setMeetings(next);
     if (selected) setSelected(next.find((meeting) => meeting.id === selected.id) ?? null);
   }
   useEffect(() => { getClubs().then((items) => Promise.all(items.map((club) => getClub(club.id)))).then(setClubs); getMyAvailability().then(setAvailability); }, []);
   useEffect(() => {
-    getMeetings(range.start, range.end).then(setMeetings);
-  }, [range]);
+    getMeetings(range.start, range.end, filter === "mine" ? { mine: true } : filter.startsWith("club:") ? { clubId: Number(filter.slice(5)) } : undefined).then(setMeetings);
+  }, [range, filter]);
 
   function chooseSlot(start: Date, end: Date) { setSelected(null); setSelection({ start: start.toISOString(), end: end.toISOString() }); }
-  function selectSlot(info: DateSelectArg) { chooseSlot(info.start, info.end); }
+  function selectSlot(info: DateSelectArg) {
+    chooseSlot(info.start, info.allDay ? new Date(info.start.getTime() + 60 * 60_000) : info.end);
+  }
   function clickDate(info: DateClickArg) { const end = new Date(info.date.getTime() + 60 * 60_000); chooseSlot(info.date, end); }
   async function addAvailability() {
     if (!selection) return;
@@ -42,12 +47,12 @@ export function CalendarPage() {
   }
   return (
     <section className="calendar-page">
-      <div className="calendar-heading"><div><p className="kicker">Club schedule</p><h1>Reading calendar.</h1></div><p>Times shown in {Intl.DateTimeFormat().resolvedOptions().timeZone}</p></div>
+      <div className="calendar-heading"><div><p className="kicker">Club schedule</p><h1>Reading calendar.</h1></div><div className="calendar-tools"><select aria-label="Calendar filter" value={filter} onChange={(event) => setFilter(event.target.value)}><option value="all">All meetings</option><option value="mine">My meetings</option>{clubs.map((club) => <option value={`club:${club.id}`} key={club.id}>{club.name}</option>)}</select><button type="button" onClick={() => setShowWeekly(true)}>Weekly availability</button><p>Times shown in {Intl.DateTimeFormat().resolvedOptions().timeZone}</p></div></div>
       <div className="calendar-layout"><div className="calendar-surface">
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="dayGridMonth" headerToolbar={{ left: "prev,next today", center: "title", right: "dayGridMonth,timeGridWeek,timeGridDay" }}
-          selectable selectMirror nowIndicator height="auto" events={meetings.map((meeting) => ({ id: String(meeting.id), title: meeting.title, start: meeting.start_time, end: meeting.end_time, className: meeting.status === "CANCELLED" ? "cancelled-event" : "" }))}
+          selectable selectMirror nowIndicator height="auto" events={meetings.map((meeting) => ({ id: String(meeting.id), title: meeting.title, start: meeting.start_time, end: meeting.end_time, className: meeting.status === "CANCELLED" ? "cancelled-event" : new Date(meeting.start_time).getTime() > Date.now() ? "upcoming-event" : "" }))}
           datesSet={(info) => setRange({ start: info.start, end: info.end })}
           select={selectSlot} dateClick={clickDate}
           eventClick={(info) => { setSelection(null); setSelected(meetings.find((meeting) => meeting.id === Number(info.event.id)) ?? null); }}
@@ -56,6 +61,7 @@ export function CalendarPage() {
       </div>
       {selection ? <MeetingForm clubs={clubs} initialStart={selection.start} initialEnd={selection.end} onClose={() => setSelection(null)} onCreated={() => { setSelection(null); refresh(); }} /> : null}
       {selected ? <MeetingDetails meeting={selected} viewerRole={clubs.find((club) => club.id === selected.club_id)?.viewer_role ?? null} onClose={() => setSelected(null)} onChange={refresh} /> : null}
+      {showWeekly ? <WeeklyAvailabilitySettings onClose={() => setShowWeekly(false)} /> : null}
       </div>
     </section>
   );

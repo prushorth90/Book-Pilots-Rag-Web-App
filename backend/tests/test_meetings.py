@@ -48,7 +48,7 @@ async def test_meeting_utc_authorization_rsvp_and_cancel(client: AsyncClient) ->
     assert created.status_code == 201
     assert created.json()["start_time"] == "2026-08-20T23:00:00Z"
     assert listed.json()[0]["club_name"] == "Calendar Club"
-    assert rsvp.json()["status"] == "GOING"
+    assert rsvp.json()["status"] == "ACCEPTED"
     assert cancelled.json()["status"] == "CANCELLED"
 
 
@@ -75,3 +75,113 @@ async def test_user_and_club_availability(client: AsyncClient) -> None:
     assert saved.status_code == 200
     assert saved.json()[0]["start_time"] == "2026-08-21T16:00:00Z"
     assert len(club_slots.json()) == 1
+
+
+async def test_weekly_overlap_suggestions_timezone_and_conflicts(client: AsyncClient) -> None:
+    owner = await register(client, "suggestion_owner")
+    member = await register(client, "suggestion_member")
+    club = await client.post(
+        "/clubs", headers=owner, json={"name": "Suggestion Club", "is_public": True}
+    )
+    club_id = club.json()["id"]
+    joined = await client.post(f"/clubs/{club_id}/join", headers=member)
+    owner_user = (await client.get("/auth/me", headers=owner)).json()
+    member_id = joined.json()["user"]["id"]
+
+    owner_rules = {
+        "rules": [
+            {
+                "weekday": 0,
+                "start_minute": 18 * 60,
+                "end_minute": 21 * 60,
+                "timezone": "America/New_York",
+            }
+        ]
+    }
+    member_rules = {
+        "rules": [
+            {
+                "weekday": 0,
+                "start_minute": 19 * 60,
+                "end_minute": 22 * 60,
+                "timezone": "America/New_York",
+            }
+        ]
+    }
+    assert (
+        await client.put("/availability/weekly", headers=owner, json=owner_rules)
+    ).status_code == 200
+    assert (
+        await client.put("/availability/weekly", headers=member, json=member_rules)
+    ).status_code == 200
+
+    suggestions = await client.get(
+        "/meetings/suggestions",
+        headers=owner,
+        params={
+            "club_id": club_id,
+            "start": "2026-08-24T00:00:00Z",
+            "end": "2026-08-25T23:59:00Z",
+            "duration_minutes": 60,
+            "invitee_ids": member_id,
+        },
+    )
+    first = suggestions.json()[0]
+    assert first["start_time"] == "2026-08-24T23:00:00Z"
+    assert first["available_user_ids"] == sorted([owner_user["id"], member_id])
+
+    meeting = {
+        "club_id": club_id,
+        "title": "Suggested meeting",
+        "start_time": first["start_time"],
+        "end_time": first["end_time"],
+        "timezone": "America/New_York",
+        "invitee_ids": [member_id],
+    }
+    created = await client.post("/meetings", headers=owner, json=meeting)
+    conflict = await client.post(
+        "/meetings", headers=owner, json={**meeting, "title": "Conflicting meeting"}
+    )
+    mine = await client.get(
+        "/meetings",
+        headers=member,
+        params={
+            "start": "2026-08-24T00:00:00Z",
+            "end": "2026-08-25T23:59:00Z",
+            "mine": True,
+        },
+    )
+
+    assert created.status_code == 201
+    assert created.json()["attendees"][1]["status"] == "PENDING"
+    assert conflict.status_code == 409
+    assert "Scheduling conflict" in conflict.json()["detail"]
+    assert len(mine.json()) == 1
+
+
+async def test_new_rsvp_states(client: AsyncClient) -> None:
+    owner = await register(client, "rsvp_owner")
+    member = await register(client, "rsvp_member")
+    club = await client.post("/clubs", headers=owner, json={"name": "RSVP Club", "is_public": True})
+    club_id = club.json()["id"]
+    joined = await client.post(f"/clubs/{club_id}/join", headers=member)
+    meeting = await client.post(
+        "/meetings",
+        headers=owner,
+        json={
+            "club_id": club_id,
+            "title": "RSVP meeting",
+            "start_time": "2026-09-01T18:00:00Z",
+            "end_time": "2026-09-01T19:00:00Z",
+            "timezone": "UTC",
+            "invitee_ids": [joined.json()["user"]["id"]],
+        },
+    )
+    meeting_id = meeting.json()["id"]
+    for rsvp_status in ["ACCEPTED", "MAYBE", "DECLINED"]:
+        response = await client.put(
+            f"/meetings/{meeting_id}/rsvp",
+            headers=member,
+            json={"status": rsvp_status},
+        )
+        assert response.json()["status"] == rsvp_status
