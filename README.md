@@ -21,6 +21,12 @@ The API exposes `POST /auth/register`, `POST /auth/login`, `POST /auth/refresh`,
 
 Authenticated pages are available at `/dashboard` and `/profile`; anonymous visitors are redirected to `/login`.
 
+## Books and recommendation data
+
+Authenticated users can search Open Library by keyword, title, author, or ISBN at `/discover`. Search documents are normalized into the internal book shape with explicit fallbacks for absent authors, covers, descriptions, publication years, ISBNs, genres, and ratings.
+
+Saving a reading status creates or updates a PostgreSQL `books` record and a unique user/book history record. `WANT_TO_READ`, `READING`, and `READ` states, personal ratings, reviews, normalized Open Library metadata, and favorite genre preferences are retained for the future recommender. The library, details, and preferences experiences are available at `/library`, `/books/:workId`, and `/preferences`.
+
 ## Architecture
 
 ```text

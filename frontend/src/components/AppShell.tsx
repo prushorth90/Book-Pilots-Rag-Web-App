@@ -16,11 +16,12 @@ export function AppShell({ children }: PropsWithChildren) {
           <BookOpenText aria-hidden="true" size={28} strokeWidth={1.7} />
           <span>{appName}</span>
         </Link>
-        <nav aria-label="Account navigation">
+        <nav className={isAuthenticated ? "authenticated-nav" : ""} aria-label="Account navigation">
           {isAuthenticated ? (
             <>
-              <Link to="/dashboard">Dashboard</Link>
-              <Link to="/profile">Profile</Link>
+              <Link to="/discover">Discover</Link>
+              <Link to="/library">Library</Link>
+              <Link to="/preferences">Preferences</Link>
               <Link className="logout-link" to="/" title="Log out" aria-label="Log out" onClick={logout}>
                 <LogOut aria-hidden="true" size={19} />
               </Link>

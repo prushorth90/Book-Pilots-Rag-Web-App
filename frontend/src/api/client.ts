@@ -36,6 +36,14 @@ class ApiClient {
     return this.request<T>(path, { method: "POST", body: JSON.stringify(body) });
   }
 
+  async put<T>(path: string, body: unknown): Promise<T> {
+    return this.request<T>(path, { method: "PUT", body: JSON.stringify(body) });
+  }
+
+  async delete(path: string): Promise<void> {
+    await this.request<void>(path, { method: "DELETE" });
+  }
+
   login(input: LoginInput): Promise<AuthResponse> {
     return this.post<AuthResponse>("/auth/login", input);
   }
@@ -74,6 +82,7 @@ class ApiClient {
       const error = (await response.json().catch(() => null)) as { detail?: string } | null;
       throw new ApiError(response.status, error?.detail ?? "Request failed");
     }
+    if (response.status === 204) return undefined as T;
     return response.json() as Promise<T>;
   }
 }

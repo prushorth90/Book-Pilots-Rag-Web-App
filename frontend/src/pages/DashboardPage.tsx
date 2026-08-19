@@ -10,8 +10,8 @@ export function DashboardPage() {
       <p className="kicker">Your reading desk</p>
       <h1>Good to see you, {user?.first_name}.</h1>
       <div className="dashboard-grid">
-        <article><BookMarked /><h2>Recommendations</h2><p>Your next set of tailored books will appear here.</p></article>
-        <article><Users /><h2>Book clubs</h2><p>Your shared reading rooms will appear here.</p></article>
+        <article><BookMarked /><h2>Discover books</h2><p>Search Open Library and build your reading history.</p><Link to="/discover">Start discovering</Link></article>
+        <article><Users /><h2>Reading preferences</h2><p>Choose favorite genres to shape future recommendations.</p><Link to="/preferences">Choose genres</Link></article>
       </div>
       <Link className="text-link" to="/profile">View profile</Link>
     </section>
