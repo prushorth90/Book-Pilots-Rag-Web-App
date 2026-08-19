@@ -1,1 +1,0 @@
-"""Book Pilots backend application."""

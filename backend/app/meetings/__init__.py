@@ -1,1 +1,0 @@
-"""Book club meeting logic."""

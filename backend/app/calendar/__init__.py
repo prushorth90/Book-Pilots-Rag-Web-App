@@ -1,1 +1,0 @@
-"""Book club calendar and scheduling logic."""
