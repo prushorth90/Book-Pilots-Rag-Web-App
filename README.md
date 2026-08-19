@@ -61,6 +61,12 @@ Users may also save recurring weekly rules such as Monday 6–9 PM or Saturday 1
 
 Calendar filters support all joined-club meetings, meetings where the user has a non-declined attendee record, and a specific club. Upcoming events receive a distinct calendar accent and the next three non-declined meetings appear on the dashboard. Meeting creation and time changes return `409` with affected usernames when an invited member already has an overlapping scheduled meeting.
 
+## Club communication
+
+Every club member can open the club room from its detail page or from a calendar event. The live chat loads persistent PostgreSQL history, authenticates WebSocket connections with the member’s access token, verifies club membership, saves each message before broadcasting it, and reconnects with bounded exponential backoff. Senders can edit or soft-delete their own messages; owners, admins, and moderators can remove other members’ messages through the moderation endpoint.
+
+The Book Discussion tab is bound to the club’s current book. Members can create threads, post responses, and reply to individual posts. Discussion posts are stored in PostgreSQL and preserve parent relationships for threaded rendering. Calendar event details link directly to both `/clubs/:clubId/room?tab=chat` and `/clubs/:clubId/room?tab=discussion`.
+
 ## Architecture
 
 ```text

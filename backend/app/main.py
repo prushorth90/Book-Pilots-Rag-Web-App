@@ -11,7 +11,10 @@ from app.models import (  # noqa: F401
     Book,
     BookClub,
     BookClubMember,
+    ChatMessage,
     ClubBook,
+    DiscussionPost,
+    DiscussionThread,
     Meeting,
     MeetingAttendee,
     User,
@@ -23,6 +26,7 @@ from app.models import (  # noqa: F401
 from app.routers.auth import router as auth_router
 from app.routers.books import router as books_router
 from app.routers.clubs import router as clubs_router
+from app.routers.communication import router as communication_router
 from app.routers.health import router as health_router
 from app.routers.meetings import router as meetings_router
 from app.routers.recommendations import router as recommendations_router
@@ -51,3 +55,4 @@ app.include_router(books_router)
 app.include_router(recommendations_router)
 app.include_router(clubs_router)
 app.include_router(meetings_router)
+app.include_router(communication_router)

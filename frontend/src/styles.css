@@ -278,6 +278,50 @@ h1 { font: 600 clamp(52px, 7vw, 96px)/0.95 "Newsreader", serif; margin: 18px 0 2
 .rsvp-actions button.active { background: var(--ink); color: white; }
 .cancel-meeting { width: 100%; margin-top: 20px; border: 1px solid #9e2f22; color: #9e2f22; background: transparent; padding: 9px; }
 .club-actions a { border: 1px solid var(--ink); color: var(--ink); padding: 10px 14px; border-radius: 3px; text-decoration: none; white-space: nowrap; }
+.meeting-room-links { display: flex; gap: 8px; margin: 0 0 18px; }
+.meeting-room-links a { color: var(--coral); font-size: 12px; font-weight: 600; }
+
+.communication-page { width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 48px 0 90px; }
+.communication-page > header { display: flex; justify-content: space-between; align-items: end; border-bottom: 1px solid #aaa398; padding-bottom: 20px; }
+.communication-page h1 { font: 600 clamp(48px, 6vw, 78px)/.95 "Newsreader", serif; margin: 8px 0 0; }
+.communication-page > header > a { color: var(--ink); }
+.communication-tabs { display: flex; gap: 4px; margin: 20px 0; }
+.communication-tabs button { border: 1px solid #8f8a80; background: transparent; padding: 9px 14px; }
+.communication-tabs button[aria-selected="true"] { background: var(--ink); color: white; }
+.club-chat-pane { max-width: 900px; }
+.chat-status { display: flex; align-items: center; gap: 7px; color: #65615a; font-size: 11px; text-transform: uppercase; margin-bottom: 8px; }
+.connection-dot { width: 8px; height: 8px; border-radius: 50%; background: #8f8a80; }
+.connection-dot.status-connected { background: var(--green); }
+.connection-dot.status-reconnecting { background: var(--gold); }
+.message-history { height: min(58vh, 620px); overflow-y: auto; border: 1px solid #aaa398; background: rgba(255,255,255,.3); padding: 18px; }
+.chat-message { position: relative; max-width: 72%; margin-bottom: 14px; padding: 10px 12px; background: #e7e0d3; border-radius: 3px; }
+.chat-message.own-message { margin-left: auto; background: #dce8df; }
+.message-heading { display: flex; justify-content: space-between; gap: 16px; font-size: 11px; }
+.message-heading time, .edited-label { color: #706c65; font-size: 10px; }
+.chat-message p { margin: 7px 0 2px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.message-actions { position: absolute; right: 6px; bottom: 4px; display: flex; gap: 2px; opacity: 0; }
+.chat-message:hover .message-actions, .chat-message:focus-within .message-actions { opacity: 1; }
+.message-actions button { border: 0; background: transparent; padding: 3px; }
+.chat-composer { display: grid; grid-template-columns: 1fr 48px; border: 1px solid #aaa398; border-top: 0; }
+.chat-composer input { border: 0; background: rgba(255,255,255,.4); padding: 13px; min-width: 0; }
+.chat-composer button { border: 0; background: var(--ink); color: white; }
+.discussion-pane { display: grid; grid-template-columns: 280px 1fr; gap: 32px; }
+.thread-list { display: grid; align-content: start; border-top: 1px solid #aaa398; }
+.thread-list > button { border: 0; border-bottom: 1px solid #aaa398; background: transparent; text-align: left; padding: 13px 8px; }
+.thread-list > button.active { background: #e3ddd1; }
+.thread-list strong, .thread-list span { display: block; }
+.thread-list span { color: #65615a; font-size: 10px; margin-top: 4px; }
+.thread-list .new-thread { display: flex; gap: 7px; align-items: center; font-weight: 600; }
+.thread-content h2 { font: 600 38px/1 "Newsreader", serif; }
+.discussion-posts > article { border-top: 1px solid #aaa398; padding: 14px 0; }
+.discussion-posts article > div { display: flex; justify-content: space-between; font-size: 12px; }
+.discussion-posts time { color: #65615a; font-size: 10px; }
+.discussion-posts article > button { border: 0; background: transparent; display: flex; gap: 5px; color: var(--coral); padding: 0; }
+.discussion-posts .nested-reply { margin: 12px 0 0 34px; padding: 10px; border-left: 2px solid #aaa398; background: rgba(255,255,255,.28); }
+.discussion-composer { border-top: 1px solid #aaa398; padding-top: 16px; }
+.discussion-composer label { display: grid; gap: 6px; font-size: 12px; font-weight: 600; }
+.discussion-composer textarea { min-height: 100px; resize: vertical; background: rgba(255,255,255,.4); border: 1px solid #8f8a80; padding: 10px; }
+.discussion-composer .form-submit { width: 120px; margin-top: 8px; }
 
 @media (max-width: 760px) {
   .masthead, .home { width: min(100% - 32px, 1180px); }
@@ -332,6 +376,11 @@ h1 { font: 600 clamp(52px, 7vw, 96px)/0.95 "Newsreader", serif; margin: 18px 0 2
   .fc .fc-toolbar-chunk:last-child { width: 100%; display: flex; }
   .fc .fc-toolbar-chunk:last-child .fc-button { flex: 1; }
   .meeting-form-panel, .meeting-details { position: static; max-height: none; }
+  .communication-page { width: min(100% - 24px, 1180px); padding-top: 36px; }
+  .communication-page > header { align-items: start; flex-direction: column; gap: 15px; }
+  .discussion-pane { grid-template-columns: 1fr; }
+  .thread-list { max-height: 220px; overflow-y: auto; }
+  .chat-message { max-width: 88%; }
   .weekly-rules > div { grid-template-columns: 1fr 1fr; }
   .weekly-rules > div span { display: none; }
 }

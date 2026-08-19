@@ -1,4 +1,5 @@
 import { CalendarClock, MapPin, Users, X } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { cancelMeeting, setRsvp } from "../api/meetings";
 import type { ClubRole } from "../types/clubs";
@@ -22,6 +23,7 @@ export function MeetingDetails({ meeting, viewerRole, onClose, onChange }: Props
     <aside className="meeting-details" aria-label="Meeting details">
       <button className="panel-close" type="button" aria-label="Close meeting details" onClick={onClose}><X size={20} /></button>
       <p className="kicker">{meeting.club_name}</p><h2>{meeting.title}</h2>
+      <div className="meeting-room-links"><Link to={`/clubs/${meeting.club_id}/room?tab=chat`}>Open club chat</Link><Link to={`/clubs/${meeting.club_id}/room?tab=discussion`}>Book discussion</Link></div>
       <span className={`meeting-status status-${meeting.status.toLowerCase()}`}>{meeting.status}</span>
       <div className="meeting-detail-row"><CalendarClock size={18} /><span>{format(meeting.start_time)}<br />to {format(meeting.end_time)}</span></div>
       {meeting.location ? <div className="meeting-detail-row"><MapPin size={18} />{meeting.location.startsWith("http") ? <a href={meeting.location} target="_blank" rel="noreferrer">Join meeting</a> : <span>{meeting.location}</span>}</div> : null}

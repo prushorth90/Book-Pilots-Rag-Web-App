@@ -14,6 +14,18 @@ export class ApiError extends Error {
 }
 
 class ApiClient {
+  getAccessToken(): string | null {
+    return localStorage.getItem(accessTokenKey);
+  }
+
+  websocketUrl(path: string): string {
+    const url = new URL(apiUrl);
+    url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
+    url.pathname = path;
+    url.search = "";
+    return url.toString();
+  }
+
   hasAccessToken(): boolean {
     return Boolean(localStorage.getItem(accessTokenKey));
   }

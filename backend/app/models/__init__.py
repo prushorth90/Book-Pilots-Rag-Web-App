@@ -2,6 +2,7 @@
 
 from app.models.book import Book, ReadingStatus, UserBook, UserGenre
 from app.models.club import BookClub, BookClubMember, ClubBook, ClubBookStatus, ClubRole
+from app.models.communication import ChatMessage, DiscussionPost, DiscussionThread
 from app.models.meeting import (
     Meeting,
     MeetingAttendee,
@@ -19,6 +20,9 @@ __all__ = [
     "ClubBook",
     "ClubBookStatus",
     "ClubRole",
+    "ChatMessage",
+    "DiscussionPost",
+    "DiscussionThread",
     "Meeting",
     "MeetingAttendee",
     "MeetingStatus",

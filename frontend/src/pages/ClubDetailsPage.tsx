@@ -40,6 +40,7 @@ export function ClubDetailsPage() {
       <header className="club-hero">
         <div><p className="kicker">{club.is_public ? "Public book club" : "Private book club"}</p><h1>{club.name}</h1><p>{club.description ?? "A gathering place for readers."}</p></div>
         <div className="club-actions">
+          {club.viewer_role ? <Link to={`/clubs/${id}/room`}>Open club room</Link> : null}
           {club.viewer_role ? <Link to="/calendar">View calendar</Link> : null}
           {!club.viewer_role && club.is_public ? <button onClick={join} type="button">Join club</button> : null}
           {club.viewer_role && club.viewer_role !== "OWNER" ? <button onClick={leave} type="button">Leave club</button> : null}
