@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { ProtectedRoute } from "../components/ProtectedRoute";
@@ -15,6 +16,10 @@ import { PreferencesPage } from "../pages/PreferencesPage";
 import { ProfilePage } from "../pages/ProfilePage";
 import { RegisterPage } from "../pages/RegisterPage";
 
+const CalendarPage = lazy(() =>
+  import("../pages/CalendarPage").then((module) => ({ default: module.CalendarPage })),
+);
+
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
   return (
@@ -28,6 +33,7 @@ export function AppRoutes() {
       <Route path="/clubs" element={<ProtectedRoute><ClubsPage /></ProtectedRoute>} />
       <Route path="/clubs/new" element={<ProtectedRoute><CreateClubPage /></ProtectedRoute>} />
       <Route path="/clubs/:clubId" element={<ProtectedRoute><ClubDetailsPage /></ProtectedRoute>} />
+      <Route path="/calendar" element={<ProtectedRoute><Suspense fallback={<div className="route-loading">Loading calendar...</div>}><CalendarPage /></Suspense></ProtectedRoute>} />
       <Route path="/library" element={<ProtectedRoute><LibraryPage /></ProtectedRoute>} />
       <Route path="/preferences" element={<ProtectedRoute><PreferencesPage /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />

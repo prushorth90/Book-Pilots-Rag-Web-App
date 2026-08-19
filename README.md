@@ -51,6 +51,12 @@ Authenticated users can browse clubs at `/clubs`, create clubs at `/clubs/new`, 
 
 Backend authorization is centralized in `app/auth/club_permissions.py`. Club routes use shared editor, member-manager, book-manager, moderator, and participant checks rather than embedding role matrices in individual endpoints. Club books retain `CURRENT`, `UPCOMING`, or `COMPLETED` status in PostgreSQL; selecting a new current book moves the previous current selection to completed.
 
+## Calendar and meetings
+
+The authenticated `/calendar` page uses FullCalendar with month, week, and day views. Selecting a day or time range opens the scheduling panel, shows overlapping availability shared by club members, and lets club owners or admins book a meeting. Events open a detail panel with the club, organizer, attendees, local time, location or meeting link, cancellation state, and RSVP controls.
+
+Meeting and availability timestamps require timezone-aware input and are normalized to UTC before PostgreSQL persistence. The API exposes date-range meeting queries, create/update/cancel operations, RSVP updates, personal availability replacement, and club availability queries. Browsers render returned UTC timestamps in the user’s current `Intl` timezone.
+
 ## Architecture
 
 ```text

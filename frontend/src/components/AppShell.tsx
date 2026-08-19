@@ -22,6 +22,7 @@ export function AppShell({ children }: PropsWithChildren) {
               <Link to="/discover">Discover</Link>
               <Link to="/library">Library</Link>
               <Link to="/clubs">Clubs</Link>
+              <Link to="/calendar">Calendar</Link>
               <Link to="/preferences">Preferences</Link>
               <Link className="logout-link" to="/" title="Log out" aria-label="Log out" onClick={logout}>
                 <LogOut aria-hidden="true" size={19} />
