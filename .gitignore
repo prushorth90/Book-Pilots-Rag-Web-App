@@ -137,6 +137,8 @@ venv.bak/
 node_modules/
 frontend/dist/
 .ruff_cache/
+backend/app/recommender/artifacts/*
+!backend/app/recommender/artifacts/.gitkeep
 
 # Spyder project settings
 .spyderproject

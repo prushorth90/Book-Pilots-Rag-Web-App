@@ -24,8 +24,11 @@ services:
       JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
       REFRESH_TOKEN_EXPIRE_DAYS: ${REFRESH_TOKEN_EXPIRE_DAYS:-7}
+      RECOMMENDER_MIN_RATINGS: ${RECOMMENDER_MIN_RATINGS:-3}
     ports:
       - "8000:8000"
+    volumes:
+      - ./backend/app/recommender/artifacts:/app/app/recommender/artifacts
     depends_on:
       db:
         condition: service_healthy

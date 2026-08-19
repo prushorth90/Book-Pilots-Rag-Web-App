@@ -5,3 +5,5 @@ __pycache__/
 .ruff_cache/
 .venv/
 tests/
+app/recommender/artifacts/*
+!app/recommender/artifacts/.gitkeep

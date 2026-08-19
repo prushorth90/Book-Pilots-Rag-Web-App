@@ -11,6 +11,7 @@ from app.models import Book, User, UserBook, UserGenre  # noqa: F401
 from app.routers.auth import router as auth_router
 from app.routers.books import router as books_router
 from app.routers.health import router as health_router
+from app.routers.recommendations import router as recommendations_router
 
 
 @asynccontextmanager
@@ -33,3 +34,4 @@ app.add_middleware(
 app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(books_router)
+app.include_router(recommendations_router)

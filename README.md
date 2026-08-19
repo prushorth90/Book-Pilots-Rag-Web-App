@@ -27,6 +27,24 @@ Authenticated users can search Open Library by keyword, title, author, or ISBN a
 
 Saving a reading status creates or updates a PostgreSQL `books` record and a unique user/book history record. `WANT_TO_READ`, `READING`, and `READ` states, personal ratings, reviews, normalized Open Library metadata, and favorite genre preferences are retained for the future recommender. The library, details, and preferences experiences are available at `/library`, `/books/:workId`, and `/preferences`.
 
+## Recommendation training
+
+The backend recommendation engine combines TF-IDF cosine similarity over genres, authors, titles, and descriptions with TensorFlow/Keras user and book embeddings. Collaborative scores receive 55% weight, content similarity 35%, and normalized popularity 10%. Users with fewer than `RECOMMENDER_MIN_RATINGS` explicit ratings use a genre and content cold-start profile instead.
+
+Training is always offline and never runs in an API request. With PostgreSQL running, create fresh artifacts with:
+
+```bash
+docker compose run --rm backend python -m app.recommender.training --epochs 20
+```
+
+This writes the TF-IDF artifact, Keras model, ID mappings, and training manifest to `backend/app/recommender/artifacts/`. Compose mounts that directory into the API container. Restart the backend after retraining so its in-memory artifact cache reloads:
+
+```bash
+docker compose restart backend
+```
+
+Authenticated clients can then request `GET /recommendations?limit=10`. Each result includes the normalized book, hybrid score, and a short explanation. If artifacts have not been trained, the endpoint returns `503` with the training instruction.
+
 ## Architecture
 
 ```text
