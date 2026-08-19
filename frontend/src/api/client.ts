@@ -40,6 +40,10 @@ class ApiClient {
     return this.request<T>(path, { method: "PUT", body: JSON.stringify(body) });
   }
 
+  async patch<T>(path: string, body: unknown): Promise<T> {
+    return this.request<T>(path, { method: "PATCH", body: JSON.stringify(body) });
+  }
+
   async delete(path: string): Promise<void> {
     await this.request<void>(path, { method: "DELETE" });
   }

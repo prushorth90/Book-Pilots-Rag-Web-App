@@ -7,9 +7,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.database.base import Base
 from app.database.session import engine
-from app.models import Book, User, UserBook, UserGenre  # noqa: F401
+from app.models import (  # noqa: F401
+    Book,
+    BookClub,
+    BookClubMember,
+    ClubBook,
+    User,
+    UserBook,
+    UserGenre,
+)
 from app.routers.auth import router as auth_router
 from app.routers.books import router as books_router
+from app.routers.clubs import router as clubs_router
 from app.routers.health import router as health_router
 from app.routers.recommendations import router as recommendations_router
 
@@ -35,3 +44,4 @@ app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(books_router)
 app.include_router(recommendations_router)
+app.include_router(clubs_router)

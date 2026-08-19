@@ -45,6 +45,12 @@ docker compose restart backend
 
 Authenticated clients can then request `GET /recommendations?limit=10`. Each result includes the normalized book, hybrid score, and a short explanation. If artifacts have not been trained, the endpoint returns `503` with the training instruction.
 
+## Book clubs and roles
+
+Authenticated users can browse clubs at `/clubs`, create clubs at `/clubs/new`, join public clubs, leave memberships, and inspect club members and reading selections. Club owners may edit or delete their club, transfer ownership, manage every role, and manage club books. Admins may edit clubs, manage members and moderators, and manage books and future meetings. Moderators are authorized for discussion and chat moderation, while all members may participate in discussions, chat, and meetings.
+
+Backend authorization is centralized in `app/auth/club_permissions.py`. Club routes use shared editor, member-manager, book-manager, moderator, and participant checks rather than embedding role matrices in individual endpoints. Club books retain `CURRENT`, `UPCOMING`, or `COMPLETED` status in PostgreSQL; selecting a new current book moves the previous current selection to completed.
+
 ## Architecture
 
 ```text

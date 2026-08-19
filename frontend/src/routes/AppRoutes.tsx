@@ -4,6 +4,9 @@ import { ProtectedRoute } from "../components/ProtectedRoute";
 import { useAuth } from "../context/AuthContext";
 import { DashboardPage } from "../pages/DashboardPage";
 import { BookDetailsPage } from "../pages/BookDetailsPage";
+import { ClubDetailsPage } from "../pages/ClubDetailsPage";
+import { ClubsPage } from "../pages/ClubsPage";
+import { CreateClubPage } from "../pages/CreateClubPage";
 import { DiscoverPage } from "../pages/DiscoverPage";
 import { HomePage } from "../pages/HomePage";
 import { LoginPage } from "../pages/LoginPage";
@@ -22,6 +25,9 @@ export function AppRoutes() {
       <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
       <Route path="/discover" element={<ProtectedRoute><DiscoverPage /></ProtectedRoute>} />
       <Route path="/books/:workId" element={<ProtectedRoute><BookDetailsPage /></ProtectedRoute>} />
+      <Route path="/clubs" element={<ProtectedRoute><ClubsPage /></ProtectedRoute>} />
+      <Route path="/clubs/new" element={<ProtectedRoute><CreateClubPage /></ProtectedRoute>} />
+      <Route path="/clubs/:clubId" element={<ProtectedRoute><ClubDetailsPage /></ProtectedRoute>} />
       <Route path="/library" element={<ProtectedRoute><LibraryPage /></ProtectedRoute>} />
       <Route path="/preferences" element={<ProtectedRoute><PreferencesPage /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
