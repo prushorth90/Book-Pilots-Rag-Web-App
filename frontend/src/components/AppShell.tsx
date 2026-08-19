@@ -1,19 +1,34 @@
-import { BookOpenText } from "lucide-react";
+import { BookOpenText, LogOut } from "lucide-react";
 import type { PropsWithChildren } from "react";
+import { Link } from "react-router-dom";
 
 import { useAppContext } from "../context/AppContext";
+import { useAuth } from "../context/AuthContext";
 
 export function AppShell({ children }: PropsWithChildren) {
   const { appName } = useAppContext();
+  const { isAuthenticated, logout } = useAuth();
 
   return (
     <div className="app-shell">
       <header className="masthead">
-        <a className="brand" href="/" aria-label={`${appName} home`}>
+        <Link className="brand" to="/" aria-label={`${appName} home`}>
           <BookOpenText aria-hidden="true" size={28} strokeWidth={1.7} />
           <span>{appName}</span>
-        </a>
-        <span className="edition">First edition</span>
+        </Link>
+        <nav aria-label="Account navigation">
+          {isAuthenticated ? (
+            <>
+              <Link to="/dashboard">Dashboard</Link>
+              <Link to="/profile">Profile</Link>
+              <Link className="logout-link" to="/" title="Log out" aria-label="Log out" onClick={logout}>
+                <LogOut aria-hidden="true" size={19} />
+              </Link>
+            </>
+          ) : (
+            <><Link to="/login">Log in</Link><Link className="nav-primary" to="/register">Register</Link></>
+          )}
+        </nav>
       </header>
       <main>{children}</main>
     </div>

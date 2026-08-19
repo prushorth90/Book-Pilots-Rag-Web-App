@@ -37,6 +37,10 @@ button, a { font: inherit; }
 .brand { color: var(--ink); display: flex; align-items: center; gap: 10px; text-decoration: none; }
 .brand span { font-family: "Newsreader", serif; font-size: 26px; font-weight: 600; }
 .edition { text-transform: uppercase; font-size: 11px; letter-spacing: 0; font-weight: 600; }
+.masthead nav { display: flex; align-items: center; gap: 20px; }
+.masthead nav a { color: var(--ink); font-size: 13px; font-weight: 600; text-decoration: none; }
+.masthead nav .nav-primary { color: white; background: var(--ink); padding: 9px 12px; border-radius: 4px; }
+.masthead nav .logout-link { padding: 6px; display: grid; place-items: center; }
 
 .home {
   width: min(1180px, calc(100% - 48px));
@@ -65,6 +69,7 @@ h1 { font: 600 clamp(52px, 7vw, 96px)/0.95 "Newsreader", serif; margin: 18px 0 2
   align-items: center;
   gap: 12px;
   opacity: 0.74;
+  text-decoration: none;
 }
 
 .shelf-scene {
@@ -98,8 +103,39 @@ h1 { font: 600 clamp(52px, 7vw, 96px)/0.95 "Newsreader", serif; margin: 18px 0 2
 .status-ready svg { color: var(--green); }
 .status-error svg { color: var(--coral); }
 
+.account-page, .dashboard-page, .profile-page {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(54px, 9vh, 100px) 0;
+}
+.account-page { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 460px); gap: clamp(48px, 9vw, 130px); }
+.account-intro h1, .dashboard-page h1, .profile-page h1 { font: 600 clamp(48px, 6vw, 82px)/0.98 "Newsreader", serif; margin: 16px 0 24px; }
+.account-intro > p:last-child { color: #62605a; font-size: 18px; line-height: 1.6; max-width: 520px; }
+.account-form { border-top: 5px solid var(--ink); padding-top: 26px; display: flex; flex-direction: column; gap: 18px; }
+.account-form label { display: flex; flex-direction: column; gap: 7px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+.account-form input { width: 100%; border: 1px solid #8f8a80; border-radius: 3px; background: rgba(255,255,255,.38); padding: 12px; font-size: 16px; text-transform: none; outline: none; }
+.account-form input:focus { border-color: var(--coral); box-shadow: 0 0 0 2px rgba(216,95,73,.18); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-submit { border: 0; border-radius: 4px; background: var(--ink); color: white; padding: 13px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.form-submit:disabled { opacity: .65; }
+.form-error { color: #a53020; margin: 0; font-size: 14px; }
+.form-alternate { font-size: 13px; color: #65615a; }
+.form-alternate a, .text-link { color: var(--coral); font-weight: 600; }
+.route-loading { padding: 80px 24px; text-align: center; }
+.dashboard-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid #aaa398; margin: 42px 0 28px; }
+.dashboard-grid article { padding: 30px 30px 30px 0; border-bottom: 1px solid #aaa398; }
+.dashboard-grid article + article { border-left: 1px solid #aaa398; padding-left: 30px; }
+.dashboard-grid h2 { font: 600 30px "Newsreader", serif; }
+.dashboard-grid p { color: #65615a; }
+.profile-page dl { max-width: 680px; border-top: 1px solid #aaa398; }
+.profile-page dl div { display: grid; grid-template-columns: 160px 1fr; padding: 18px 0; border-bottom: 1px solid #aaa398; }
+.profile-page dt { font-size: 12px; text-transform: uppercase; font-weight: 600; }
+.profile-page dd { margin: 0; }
+
 @media (max-width: 760px) {
   .masthead, .home { width: min(100% - 32px, 1180px); }
+  .masthead nav { gap: 12px; }
+  .masthead nav a:not(.nav-primary):not(.logout-link) { display: none; }
   .home { grid-template-columns: 1fr; padding-top: 52px; gap: 40px; }
   h1 { font-size: clamp(48px, 15vw, 72px); }
   .shelf-scene { min-height: 280px; }
@@ -107,4 +143,9 @@ h1 { font: 600 clamp(52px, 7vw, 96px)/0.95 "Newsreader", serif; margin: 18px 0 2
   .book-ink { height: 250px; }
   .book-gold { height: 190px; }
   .system-status { grid-column: 1; }
+  .account-page, .dashboard-page, .profile-page { width: min(100% - 32px, 1180px); }
+  .account-page { grid-template-columns: 1fr; gap: 36px; padding-top: 48px; }
+  .field-row, .dashboard-grid { grid-template-columns: 1fr; }
+  .dashboard-grid article + article { border-left: 0; padding-left: 0; }
+  .profile-page dl div { grid-template-columns: 1fr; gap: 5px; }
 }

@@ -1,4 +1,5 @@
 import { ArrowRight, CircleAlert, Database, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { useHealth } from "../hooks/useHealth";
 
@@ -13,9 +14,9 @@ export function HomePage() {
         <p className="lede">
           Thoughtful recommendations, shared reading rooms, and conversations that stay with you.
         </p>
-        <button className="primary-action" type="button" disabled>
-          Recommendations coming soon <ArrowRight aria-hidden="true" size={18} />
-        </button>
+        <Link className="primary-action" to="/register">
+          Start your account <ArrowRight aria-hidden="true" size={18} />
+        </Link>
       </div>
 
       <div className="shelf-scene" aria-hidden="true">
