@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "book-pilots-api"
+version = "0.1.0"
+description = "API for the Book Pilots recommendation and book club application"
+requires-python = ">=3.9"
+dependencies = [
+  "asyncpg>=0.30,<1",
+  "fastapi>=0.116,<1",
+  "passlib[bcrypt]>=1.7,<2",
+  "pydantic-settings>=2.10,<3",
+  "python-jose[cryptography]>=3.5,<4",
+  "python-multipart>=0.0.20,<1",
+  "sqlalchemy[asyncio]>=2.0.41,<3",
+  "uvicorn[standard]>=0.35,<1",
+  "websockets>=15,<16",
+]
+
+[project.optional-dependencies]
+dev = [
+  "httpx>=0.28,<1",
+  "mypy>=1.17,<2",
+  "pytest>=8.4,<9",
+  "pytest-asyncio>=1.1,<2",
+  "ruff>=0.12,<1",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.12"
+follow_imports = "silent"
+strict = true
+files = ["app", "tests"]

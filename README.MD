@@ -1,71 +1,49 @@
-# Team Bald Unicorns Major Group project
+# Book Pilots
 
-## Team members
-The members of the team are:
-- Manivannan Prushorth  
-- Charlie Bowen  
-- Jun Yi Goh  
-- Zaid Maraqa 
-- Daro Saleh  
-- Nilhil Suri 
-- Alavro Moreno  
+Docker-first foundation for a book recommendation and book club application.
 
-## Project structure
-The project is called `bookClub`.  It currently consists of a single app `unibook`.
+## Stack
 
+- React, TypeScript, Vite, and Vitest
+- FastAPI, SQLAlchemy, asyncpg, PostgreSQL, and pytest
+- JWT-ready authentication dependencies and WebSocket support
+- Docker Compose and GitHub Actions
 
-## Installation instructions
-To install the software and use it in your local development environment, you must first set up and activate a local development environment.  From the root of the project:
+## Run locally
 
-```
-$ virtualenv venv
-$ source venv/bin/activate
+Optionally copy `.env.example` to `.env` and change the development values, then run:
+
+```sh
+docker compose up --build
 ```
 
-Install all required packages:
+Open the web app at <http://localhost:5173>. The API documentation is at
+<http://localhost:8000/docs>, and the database-backed health endpoint is at
+<http://localhost:8000/health>.
 
-```
-$ pip3 install -r requirements.txt
-```
+Stop the stack with `docker compose down`. Add `--volumes` to also remove the
+local PostgreSQL data volume.
 
-Migrate the database:
+## Validate without Compose
 
-```
-$ python3 manage.py migrate
-```
+Backend checks require Python 3.9 or newer:
 
-Seed the development database with:
-
-```
-$ python3 manage.py seed
-```
-
-Run all tests with:
-```
-$ python3 manage.py test
+```sh
+cd backend
+python3 -m venv .venv
+.venv/bin/pip install -e '.[dev]'
+.venv/bin/ruff check .
+.venv/bin/mypy app tests
+.venv/bin/pytest
 ```
 
-To use spark recommender system, Java 8 needs to be installed and used:
-  Installation of java 8: https://docs.datastax.com/en/jdk-install/doc/jdk-install/installOpenJdkDeb.html
-  pyspark is included in requirements.txt, so running pip3 install -r requirements.txt will have pyspark downloaded.
-  Switching between java versions in ubuntu if multiple versions are installed: https://aboullaite.me/switching-between-java-versions-on-ubuntu-linux/
+Frontend checks require Node.js 22:
 
-*The above instructions should work in your version of the application.  If there are deviations, declare those here in bold.  Otherwise, remove this line.*
-
-## Sources
-The packages used by this application are specified in `requirements.txt`
-
-*Declare are other sources here.*
-
-Some of the tests written have been reused as well with modifications and extensions of the tests to fit the bookaholics application.
-
-DateField accepting only today and future's date: https://stackoverflow.com/questions/4941974/django-how-to-set-datefield-to-only-accept-today-future-dates/4942284
-Disappearing location field with checkbox: https://stackoverflow.com/questions/53319441/when-checking-one-check-box-the-other-check-box-must-disappear
-
-Recommender system and evaluation:
-Source code - https://sundog-education.com/RecSys/
-  The source code has been refactored to classes and functions to fit the bookaholics application.
-
-Spark recommender sources
-  Column in dataframe not being numeric - https://stackoverflow.com/questions/27772769/how-to-use-mllib-recommendation-if-the-user-ids-are-string-instead-of-contiguous
-  Getting original column id - https://stackoverflow.com/questions/45787323/pyspark-reversing-stringindexer-in-nested-array
+```sh
+cd frontend
+npm ci
+npm run lint
+npm run typecheck
+npm test
+npm run build
+```
