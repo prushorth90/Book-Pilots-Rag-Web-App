@@ -10,7 +10,7 @@ export function HomePage() {
     <section className="home">
       <div className="intro">
         <p className="kicker">A better reading orbit</p>
-        <h1>Find the book that moves your club forward.</h1>
+        <h1>Find the book that moves your club forward and to the stars.</h1>
         <p className="lede">
           Thoughtful recommendations, shared reading rooms, and conversations that stay with you.
         </p>
