@@ -6,6 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     app_name: str = "Book Pilots API"
+    frontend_url: str = "http://localhost:5173"
     database_url: str = "postgresql+asyncpg://book_pilots:book_pilots@localhost:5432/book_pilots"
     jwt_secret_key: str = "development-only-secret-change-me"
     jwt_algorithm: str = "HS256"

@@ -139,6 +139,8 @@ frontend/dist/
 .ruff_cache/
 backend/app/recommender/artifacts/*
 !backend/app/recommender/artifacts/.gitkeep
+backend/data/*
+!backend/data/.gitkeep
 
 # Spyder project settings
 .spyderproject

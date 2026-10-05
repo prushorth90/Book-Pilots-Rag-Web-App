@@ -6,6 +6,7 @@ USER_DATA = {
     "password": "correct-horse-battery",
     "first_name": "Ada",
     "last_name": "Reader",
+    "age": 32,
 }
 
 
@@ -16,6 +17,7 @@ async def test_registration_returns_user_and_tokens(client: AsyncClient) -> None
     body = response.json()
     assert body["user"]["email"] == USER_DATA["email"]
     assert body["user"]["username"] == USER_DATA["username"]
+    assert body["user"]["age"] == USER_DATA["age"]
     assert body["access_token"]
     assert body["refresh_token"]
     assert "password" not in body["user"]

@@ -23,6 +23,7 @@ export function RegisterPage() {
         password: String(form.get("password")),
         first_name: String(form.get("first_name")),
         last_name: String(form.get("last_name")),
+        age: Number(form.get("age")),
       });
       navigate("/dashboard", { replace: true });
     } catch (requestError) {
@@ -50,6 +51,7 @@ export function RegisterPage() {
       </div>
       <label>Username<input name="username" minLength={3} autoComplete="username" required /></label>
       <label>Email<input name="email" type="email" autoComplete="email" required /></label>
+      <label>Age<input name="age" type="number" min={0} max={130} required /></label>
       <label>Password<input name="password" type="password" minLength={8} autoComplete="new-password" required /></label>
     </AuthForm>
   );

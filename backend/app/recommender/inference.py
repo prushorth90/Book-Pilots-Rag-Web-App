@@ -65,7 +65,7 @@ class RecommendationEngine:
         for entry in rated:
             if entry.rating and entry.rating >= 4:
                 profile_parts.extend([entry.book.title, entry.book.author, *entry.book.genres])
-        profile = " ".join(profile_parts) or "books reading literature"
+        profile = " ".join(profile_parts)
         profile_vector = content.vectorizer.transform([profile])
         content_scores = cosine_similarity(profile_vector, content.matrix).ravel()
         collaborative_scores = self._collaborative_scores(user_id, content.book_ids)

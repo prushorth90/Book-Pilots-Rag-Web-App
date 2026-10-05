@@ -10,6 +10,7 @@ const user = {
   email: "reader@example.com",
   first_name: "Ada",
   last_name: "Reader",
+  age: 32,
   created_at: "2026-08-18T00:00:00Z",
 };
 const authResponse = {
@@ -38,6 +39,7 @@ test("registers a user and opens the protected dashboard", async () => {
   await visitor.type(screen.getByLabelText("Last name"), "Reader");
   await visitor.type(screen.getByLabelText("Username"), "reader_one");
   await visitor.type(screen.getByLabelText("Email"), "reader@example.com");
+  await visitor.type(screen.getByLabelText("Age"), "32");
   await visitor.type(screen.getByLabelText("Password"), "correct-horse-battery");
   await visitor.click(screen.getByRole("button", { name: "Create account" }));
 

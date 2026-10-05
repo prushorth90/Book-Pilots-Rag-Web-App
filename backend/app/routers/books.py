@@ -2,10 +2,12 @@ from typing import Annotated
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import get_current_user
 from app.database.session import get_db
+from app.models.book import Book
 from app.models.user import User
 from app.repositories.books import (
     delete_library_entry,
@@ -44,8 +46,12 @@ async def search(
 
 
 @router.get("/details/{work_id}", response_model=BookData)
-async def details(work_id: str, user: CurrentUser) -> BookData:
+async def details(work_id: str, db: Db, user: CurrentUser) -> BookData:
     del user
+    local = await db.execute(select(Book).where(Book.open_library_key == work_id))
+    saved = local.scalar_one_or_none()
+    if saved:
+        return BookData.model_validate(saved, from_attributes=True)
     try:
         return await get_book_details(work_id)
     except httpx.HTTPError as error:

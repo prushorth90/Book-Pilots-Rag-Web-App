@@ -10,7 +10,7 @@ from sqlalchemy import select
 
 from app.config import get_settings
 from app.database.session import SessionLocal
-from app.models.book import Book, UserBook
+from app.models.book import Book, ExternalRating, UserBook
 from app.recommender.feature_preparation import prepare_content_features, save_content_artifacts
 from app.recommender.model_training import train_collaborative_model
 
@@ -28,9 +28,22 @@ async def train(epochs: int) -> None:
                 )
             ).all()
         )
+        external_ratings = list(
+            (
+                await db.execute(
+                    select(
+                        ExternalRating.external_user_id,
+                        ExternalRating.book_id,
+                        ExternalRating.rating,
+                    )
+                )
+            ).all()
+        )
     content = prepare_content_features(books)
     save_content_artifacts(content, settings.recommender_artifact_dir)
-    typed_ratings = [(user_id, book_id, int(rating)) for user_id, book_id, rating in ratings]
+    app_rating_values = [(int(row[0]), int(row[1]), int(row[2])) for row in ratings]
+    external_rating_values = [(int(row[0]), int(row[1]), int(row[2])) for row in external_ratings]
+    typed_ratings = [*app_rating_values, *external_rating_values]
     collaborative_trained = train_collaborative_model(
         typed_ratings, settings.recommender_artifact_dir, epochs
     )
@@ -45,6 +58,7 @@ async def train(epochs: int) -> None:
         "trained_at": datetime.now(UTC).isoformat(),
         "book_count": len(books),
         "rating_count": len(typed_ratings),
+        "external_rating_count": len(external_ratings),
         "collaborative_trained": collaborative_trained,
         "popularity": popularity,
     }

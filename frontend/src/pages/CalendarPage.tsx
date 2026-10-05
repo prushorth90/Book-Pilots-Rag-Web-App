@@ -4,6 +4,7 @@ import interactionPlugin, { type DateClickArg } from "@fullcalendar/interaction"
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { getClub, getClubs } from "../api/clubs";
 import { getMeetings, getMyAvailability, saveMyAvailability } from "../api/meetings";
@@ -16,6 +17,7 @@ import type { Availability, Meeting } from "../types/meetings";
 interface Selection { start: string; end: string }
 
 export function CalendarPage() {
+  const [searchParams] = useSearchParams();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [clubs, setClubs] = useState<ClubDetail[]>([]);
   const [range, setRange] = useState({ start: new Date(), end: new Date(Date.now() + 31 * 86_400_000) });
@@ -33,6 +35,17 @@ export function CalendarPage() {
   useEffect(() => {
     getMeetings(range.start, range.end, filter === "mine" ? { mine: true } : filter.startsWith("club:") ? { clubId: Number(filter.slice(5)) } : undefined).then(setMeetings);
   }, [range, filter]);
+  useEffect(() => {
+    const meetingId = Number(searchParams.get("meeting"));
+    if (meetingId && meetings.length) {
+      setSelected(meetings.find((meeting) => meeting.id === meetingId) ?? null);
+    }
+  }, [meetings, searchParams]);
+  useEffect(() => {
+    if (searchParams.get("schedule") !== "true") return;
+    const start = new Date(); start.setMinutes(Math.ceil(start.getMinutes() / 30) * 30, 0, 0);
+    setSelection({ start: start.toISOString(), end: new Date(start.getTime() + 60 * 60_000).toISOString() });
+  }, [searchParams]);
 
   function chooseSlot(start: Date, end: Date) { setSelected(null); setSelection({ start: start.toISOString(), end: end.toISOString() }); }
   function selectSlot(info: DateSelectArg) {

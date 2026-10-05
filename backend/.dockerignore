@@ -7,3 +7,5 @@ __pycache__/
 tests/
 app/recommender/artifacts/*
 !app/recommender/artifacts/.gitkeep
+data/*
+!data/.gitkeep

@@ -31,6 +31,7 @@ async def create_user(db: AsyncSession, data: UserCreate, password_hash: str) ->
         password_hash=password_hash,
         first_name=data.first_name,
         last_name=data.last_name,
+        age=data.age,
     )
     db.add(user)
     await db.commit()

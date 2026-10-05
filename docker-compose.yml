@@ -5,8 +5,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-book_pilots}
       POSTGRES_USER: ${POSTGRES_USER:-book_pilots}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-book_pilots}
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -15,10 +13,21 @@ services:
       timeout: 5s
       retries: 10
 
+  migrate:
+    build:
+      context: ./backend
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://book_pilots:book_pilots@db:5432/book_pilots}
+    depends_on:
+      db:
+        condition: service_healthy
+
   backend:
     build:
       context: ./backend
     environment:
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
       DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://book_pilots:book_pilots@db:5432/book_pilots}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:-development-only-secret-change-me}
       JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
@@ -29,9 +38,10 @@ services:
       - "8000:8000"
     volumes:
       - ./backend/app/recommender/artifacts:/app/app/recommender/artifacts
+      - ./backend/data:/app/data
     depends_on:
-      db:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s
@@ -42,7 +52,7 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8001}
     ports:
       - "5173:80"
     depends_on:

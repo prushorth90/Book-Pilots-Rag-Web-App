@@ -1,0 +1,193 @@
+
+ RUN  v3.2.7 /Users/prushorth/Desktop/Book-Pilots-Rag-Web-App/frontend
+
+ × src/Dashboard.test.tsx > renders the aggregated reading workspace from one dashboard request 125ms
+   → Unable to find an element with the text: Dashboard Book. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"app-shell"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"masthead"[39m
+      [36m>[39m
+        [36m<a[39m
+          [33maria-label[39m=[32m"Book Pilots home"[39m
+          [33mclass[39m=[32m"brand"[39m
+          [33mdata-discover[39m=[32m"true"[39m
+          [33mhref[39m=[32m"/"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"lucide lucide-book-open-text"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"28"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-linecap[39m=[32m"round"[39m
+            [33mstroke-linejoin[39m=[32m"round"[39m
+            [33mstroke-width[39m=[32m"1.7"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"28"[39m
+            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M12 7v14"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M16 12h2"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M16 8h2"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M6 12h2"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M6 8h2"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+          [36m<span>[39m
+            [0mBook Pilots[0m
+          [36m</span>[39m
+        [36m</a>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Account navigation"[39m
+          [33mclass[39m=[32m"authenticated-nav"[39m
+        [36m>[39m
+          [36m<a[39m
+            [33mdata-discover[39m=[32m"true"[39m
+            [33mhref[39m=[32m"/discover"[39m
+          [36m>[39m
+            [0mDiscover[0m
+          [36m</a>[39m
+          [36m<a[39m
+            [33mdata-discover[39m=[32m"true"[39m
+            [33mhref[39m=[32m"/library"[39m
+          [36m>[39m
+            [0mLibrary[0m
+          [36m</a>[39m
+          [36m<a[39m
+            [33mdata-discover[39m=[32m"true"[39m
+            [33mhref[39m=[32m"/clubs"[39m
+          [36m>[39m
+            [0mClubs[0m
+          [36m</a>[39m
+          [36m<a[39m
+            [33mdata-discover[39m=[32m"true"[39m
+            [33mhref[39m=[32m"/calendar"[39m
+          [36m>[39m
+            [0mCalendar[0m
+          [36m</a>[39m
+          [36m<a[39m
+            [33mdata-discover[39m=[32m"true"[39m
+            [33mhref[39m=[32m"/preferences"[39m
+          [36m>[39m
+            [0mPreferences[0m
+          [36m</a>[39m
+          [36m<a[39m
+            [33maria-label[39m=[32m"Log out"[39m
+            [33mclass[39m=[32m"logout-link"[39m
+            [33mdata-discover[39m=[32m"true"[39m
+            [33mhref[39m=[32m"/"[39m
+            [33mtitle[39m=[32m"Log out"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-log-out"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"19"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"19"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m16 17 5-5-5-5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M21 12H9"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</a>[39m
+        [36m</nav>[39m
+      [36m</header>[39m
+      [36m<main>[39m
+        [36m<section[39m
+          [33mclass[39m=[32m"dashboard-page"[39m
+        [36m>[39m
+          [36m<header[39m
+            [33mclass[39m=[32m"dashboard-header"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<p[39m
+                [33mclass[39m=[32m"kicker"[39m
+              [36m>[39m
+                [0mYour reading desk[0m
+              [36m</p>[39m
+              [36m<h1>[39m
+                [0mGood to see you, [0m
+                [0mAda[0m
+                [0m.[0m
+              [36m</h1>[39m
+            [36m</div>[39m
+            [36m<p>[39m
+              [0mGathering your books and clubs...[0m
+            [36m</p>[39m
+          [36m</header>[39m
+          [36m<nav[39m
+            [33maria-label[39m=[32m"Dashboard quick actions"[39m
+            [33mclass[39m=[32m"quick-actions"[39m
+          [36m>[39m
+            [36m<a[39m
+              [33mdata-discover[39m=[32m"true"[39m
+              [33mhref[39m=[32m"/discover"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"lucide lucide-compass"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mheight[39m=[32m"19"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"2"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [33mwidth[39m=[32m"19"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"12"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"10"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [36m<span>[39m
+                [0mSearch Books[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<a[39m
+              [33mhref[39m=[32m"#recommendations"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+         ...
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  22:00:19
+   Duration  1.01s (transform 166ms, setup 45ms, collect 307ms, tests 125ms, environment 238ms, prepare 56ms)
+

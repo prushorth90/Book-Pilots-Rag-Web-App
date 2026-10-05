@@ -67,3 +67,17 @@ class UserGenre(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     genre: Mapped[str] = mapped_column(String(100))
+
+
+class ExternalRating(Base):
+    __tablename__ = "external_ratings"
+    __table_args__ = (
+        UniqueConstraint("source", "external_user_id", "book_id", name="uq_external_rating"),
+        CheckConstraint("rating >= 1 AND rating <= 5", name="ck_external_rating_1_5"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    source: Mapped[str] = mapped_column(String(50), index=True)
+    external_user_id: Mapped[int] = mapped_column(index=True)
+    book_id: Mapped[int] = mapped_column(ForeignKey("books.id", ondelete="CASCADE"), index=True)
+    rating: Mapped[int] = mapped_column(Integer)

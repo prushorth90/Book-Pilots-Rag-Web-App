@@ -15,6 +15,20 @@ docker compose up --build
 
 The health endpoint executes `SELECT 1` through SQLAlchemy, so a successful response verifies both FastAPI and PostgreSQL.
 
+## Database migrations
+
+Docker Compose runs `alembic upgrade head` before starting the backend. After changing a SQLAlchemy model, generate and review a migration with:
+
+```bash
+docker compose run --rm migrate alembic revision --autogenerate -m "describe change"
+```
+
+Apply pending migrations manually with:
+
+```bash
+docker compose run --rm migrate alembic upgrade head
+```
+
 ## Authentication
 
 The API exposes `POST /auth/register`, `POST /auth/login`, `POST /auth/refresh`, and the protected `GET /auth/me` route. Passwords use Argon2 hashing, and JWT access and refresh tokens carry distinct token types and expiration windows. The frontend stores the token pair locally, restores the current user on reload, refreshes expired access tokens, and removes both tokens on logout.
@@ -30,6 +44,21 @@ Saving a reading status creates or updates a PostgreSQL `books` record and a uni
 ## Recommendation training
 
 The backend recommendation engine combines TF-IDF cosine similarity over genres, authors, titles, and descriptions with TensorFlow/Keras user and book embeddings. Collaborative scores receive 55% weight, content similarity 35%, and normalized popularity 10%. Users with fewer than `RECOMMENDER_MIN_RATINGS` explicit ratings use a genre and content cold-start profile instead.
+
+The development dataset is the CC0 Book-Crossing collection published on Kaggle as `arashnic/book-recommendation-dataset`. Its ISBN-keyed metadata connects naturally to Open Library. The importer discards implicit zero ratings, normalizes ISBNs, converts explicit ratings from 1–10 to 1–5, filters sparse users/books, and stores anonymized external users as negative IDs so they cannot collide with application users.
+
+Download and import the filtered dataset with:
+
+```bash
+docker compose run --rm backend python -m app.recommender.dataset_import \
+	--download \
+	--data-dir data/book-crossing \
+	--min-user-ratings 20 \
+	--min-book-ratings 10 \
+	--max-books 25000
+```
+
+KaggleHub can download this public dataset without local API credentials. Raw CSVs are mounted under `backend/data/` and ignored by Git. The current development import contains 2,564 Book-Crossing books, 52,671 explicit ratings, and 3,392 external users; the complete training catalog contains 2,575 books and 52,679 ratings after combining application data.
 
 Training is always offline and never runs in an API request. With PostgreSQL running, create fresh artifacts with:
 
@@ -66,6 +95,12 @@ Calendar filters support all joined-club meetings, meetings where the user has a
 Every club member can open the club room from its detail page or from a calendar event. The live chat loads persistent PostgreSQL history, authenticates WebSocket connections with the member’s access token, verifies club membership, saves each message before broadcasting it, and reconnects with bounded exponential backoff. Senders can edit or soft-delete their own messages; owners, admins, and moderators can remove other members’ messages through the moderation endpoint.
 
 The Book Discussion tab is bound to the club’s current book. Members can create threads, post responses, and reply to individual posts. Discussion posts are stored in PostgreSQL and preserve parent relationships for threaded rendering. Calendar event details link directly to both `/clubs/:clubId/room?tab=chat` and `/clubs/:clubId/room?tab=discussion`.
+
+## Dashboard
+
+The authenticated `/dashboard` page brings reading and club activity into one responsive workspace: currently reading and queued books, personalized recommendations, favorite genres, memberships and current club books, recent chat messages, upcoming meetings with RSVP state, and a seven-day calendar preview. Quick actions link to search, recommendations, club creation, meeting scheduling, and the full calendar.
+
+The frontend loads this workspace with one `GET /dashboard` request. The aggregation endpoint uses a fixed set of database queries for reading state, genre preferences, memberships/current books, recent messages, and upcoming meetings, then adds cached recommender inference. Missing recommendation artifacts degrade to an empty recommendation section without making the rest of the dashboard unavailable.
 
 ## Architecture
 

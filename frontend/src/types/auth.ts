@@ -4,6 +4,7 @@ export interface User {
   email: string;
   first_name: string;
   last_name: string;
+  age: number | null;
   created_at: string;
 }
 
@@ -16,6 +17,7 @@ export interface RegisterInput extends LoginInput {
   username: string;
   first_name: string;
   last_name: string;
+  age?: number;
 }
 
 export interface TokenPair {

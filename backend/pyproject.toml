@@ -18,5 +18,5 @@ plugins = ["pydantic.mypy"]
 exclude = ["tests"]
 
 [[tool.mypy.overrides]]
-module = ["joblib", "scipy.*", "sklearn.*", "tensorflow.*"]
+module = ["joblib", "kagglehub", "scipy.*", "sklearn.*", "tensorflow.*"]
 ignore_missing_imports = true

@@ -9,6 +9,7 @@ class UserCreate(BaseModel):
     password: str = Field(min_length=8, max_length=128)
     first_name: str = Field(min_length=1, max_length=100)
     last_name: str = Field(min_length=1, max_length=100)
+    age: int | None = Field(default=None, ge=0, le=130)
 
 
 class LoginRequest(BaseModel):
@@ -26,6 +27,7 @@ class UserResponse(BaseModel):
     email: EmailStr
     first_name: str
     last_name: str
+    age: int | None
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)

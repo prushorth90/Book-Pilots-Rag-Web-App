@@ -1,6 +1,6 @@
 """SQLAlchemy models."""
 
-from app.models.book import Book, ReadingStatus, UserBook, UserGenre
+from app.models.book import Book, ExternalRating, ReadingStatus, UserBook, UserGenre
 from app.models.club import BookClub, BookClubMember, ClubBook, ClubBookStatus, ClubRole
 from app.models.communication import ChatMessage, DiscussionPost, DiscussionThread
 from app.models.meeting import (
@@ -23,6 +23,7 @@ __all__ = [
     "ChatMessage",
     "DiscussionPost",
     "DiscussionThread",
+    "ExternalRating",
     "Meeting",
     "MeetingAttendee",
     "MeetingStatus",
