@@ -48,8 +48,8 @@ async def test_cold_start_recommendations_use_genre_preferences(
     save_content_artifacts(prepare_content_features(books), tmp_path)
     await database.aclose()
 
-    client._transport.app.dependency_overrides[get_recommendation_engine] = (
-        lambda: RecommendationEngine(  # type: ignore[attr-defined]
+    client._transport.app.dependency_overrides[get_recommendation_engine] = lambda: (
+        RecommendationEngine(  # type: ignore[attr-defined]
             tmp_path
         )
     )
